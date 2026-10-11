@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kubernetes Day 6 | Namespaces & Labels</title>
+<style>
+:root {
+  --bg: #07111f;
+  --panel: #101e30;
+  --line: #233850;
+  --text: #edf5ff;
+  --muted: #8da3bd;
+  --cyan: #54e5f2;
+  --green: #51e0a1;
+  --purple: #c1a2ff;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+.container {
+  width: min(1100px, 92%);
+  margin: auto;
+}
+header {
+  padding: 65px 0 45px;
+  border-bottom: 1px solid var(--line);
+  background: radial-gradient(ellipse at top, #17304d, var(--bg) 70%);
+}
+.eyebrow {
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 12px;
+  font-weight: 700;
+}
+h1 {
+  font-size: clamp(36px, 6vw, 64px);
+  line-height: 1.1;
+  margin: 18px 0;
+}
+h1 span { color: var(--cyan); }
+.subtitle {
+  max-width: 680px;
+  color: var(--muted);
+  font-size: 17px;
+}
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 25px;
+}
+.badge {
+  border: 1px solid var(--line);
+  background: #101e30;
+  border-radius: 30px;
+  padding: 7px 13px;
+  font-size: 13px;
+}
+section { padding: 38px 0; }
+.section-title {
+  font-size: 25px;
+  margin-bottom: 20px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.card {
+  padding: 23px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  transition: transform .2s, border-color .2s;
+}
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--cyan);
+}
+.number {
+  color: var(--cyan);
+  font-size: 13px;
+  font-weight: 700;
+}
+h3 { margin: 10px 0; }
+p { color: var(--muted); }
+code {
+  color: var(--green);
+  background: #07111f;
+  padding: 3px 6px;
+  border-radius: 5px;
+  overflow-wrap: anywhere;
+}
+.terminal {
+  background: #050b13;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px;
+  overflow-x: auto;
+}
+.terminal pre {
+  color: var(--green);
+  line-height: 1.9;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.namespace {
+  border-left: 3px solid var(--purple);
+  padding: 4px 0 4px 17px;
+  margin: 20px 0;
+}
+.namespace strong { color: var(--purple); }
+.status {
+  color: var(--green);
+  font-weight: 700;
+}
+footer {
+  border-top: 1px solid var(--line);
+  padding: 28px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+footer span { color: var(--cyan); }
+</style>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+<div class="container">
+<div class="eyebrow">Hands-on Kubernetes Learning · Day 06</div>
+<h1>Namespaces <span>&</span><br>Labels</h1>
+<p class="subtitle">
+Organizing Kubernetes workloads, isolating environments,
+and identifying resources with labels and selectors.
+</p>
+<div class="badges">
+<span class="badge">Kubernetes</span>
+<span class="badge">Minikube</span>
+<span class="badge">NGINX</span>
+<span class="badge">kubectl</span>
+</div>
+</div>
+</header>
+
+<main class="container">
+
+<section>
+<h2 class="section-title">Today's Learning Objectives</h2>
+<div class="grid">
+<div class="card">
+<div class="number">01 / NAMESPACES</div>
+<h3>Environment Isolation</h3>
+<p>Separate development and production resources
+using Kubernetes namespaces.</p>
+</div>
+<div class="card">
+<div class="number">02 / LABELS</div>
+<h3>Resource Organization</h3>
+<p>Identify Pods with labels such as
+<code>app=web</code>, <code>env=dev</code>,
+and <code>tier=frontend</code>.</p>
+</div>
+<div class="card">
+<div class="number">03 / SELECTORS</div>
+<h3>Target Resources</h3>
+<p>Filter Kubernetes resources with equality-based
+and set-based label selectors.</p>
+</div>
+<div class="card">
+<div class="number">04 / OPERATIONS</div>
+<h3>Hands-on Commands</h3>
+<p>Switch namespaces, inspect labels, and practice
+adding and removing a custom label.</p>
+</div>
+</div>
+</section>
+
+<section>
+<h2 class="section-title">Namespace Architecture</h2>
+<div class="card">
+<p>One Kubernetes cluster can organize resources
+into separate namespaces.</p>
+<div class="namespace">
+<strong>dev</strong>
+<p>Development workloads · NGINX Deployment · 2 replicas</p>
+</div>
+<div class="namespace">
+<strong>prod</strong>
+<p>Production workloads · NGINX Deployment · 2 replicas</p>
+</div>
+<p>Resource names can be reused in different namespaces.
+Namespaces provide logical separation, not a complete
+security boundary by themselves.</p>
+</div>
+</section>
+
+<section>
+<h2 class="section-title">Command Reference</h2>
+<div class="terminal">
+<pre>
+# Inspect the active context
+kubectl config view --minify
+
+# List Pods in the current namespace
+kubectl get pods
+
+# Display resource labels
+kubectl get pods --show-labels
+
+# Filter by label
+kubectl get pods -l app=web
+
+# Add a custom label to a Pod
+kubectl label pod POD_NAME owner=azeem
+
+# Remove the custom label
+kubectl label pod POD_NAME owner-
+
+# Inspect development resources
+kubectl get all -n dev
+
+# Inspect production resources
+kubectl get all -n prod
+
+# List namespaces
+kubectl get namespaces
+</pre>
+</div>
+<p>Replace <code>POD_NAME</code> with an actual Pod name
+from your cluster.</p>
+</section>
+
+<section>
+<h2 class="section-title">Day 6 Results</h2>
+<div class="grid">
+<div class="card">
+<h3 class="status">✓ Namespace Context</h3>
+<p>Changed the active context's default namespace to dev.</p>
+</div>
+<div class="card">
+<h3 class="status">✓ Label Management</h3>
+<p>Added and removed the owner label on a Pod.</p>
+</div>
+<div class="card">
+<h3 class="status">✓ Label Selection</h3>
+<p>Successfully filtered a Pod by owner=azeem.</p>
+</div>
+<div class="card">
+<h3 class="status">✓ Documentation</h3>
+<p>Recorded learning progress in the project documentation.</p>
+</div>
+</div>
+</section>
+
+</main>
+
+<footer>
+<div class="container">
+KUBERNETES LEARNING SERIES · DAY 06<br>
+Built by <span>Azeem Aamir</span> · DevOps & Cloud Automation
+</div>
+</footer>
+
+  <script src="js/script.js" defer></script>
+</body>
+</html>

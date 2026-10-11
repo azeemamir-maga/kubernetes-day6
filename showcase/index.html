@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#060b16">
+<title>Kubernetes Day 6 | Azeem Aamir</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas id="particles" aria-hidden="true"></canvas>
+<div class="progress-track"><div class="progress-bar"></div></div>
+
+<nav>
+  <div class="container nav-inner">
+    <a class="logo" href="#home">AZEEM<span>.DEVOPS</span></a>
+    <div class="nav-links">
+      <a href="#architecture">Architecture</a>
+      <a href="#environments">Environments</a>
+      <a href="#commands">Commands</a>
+    </div>
+  </div>
+</nav>
+
+<header class="container hero" id="home">
+  <div class="reveal">
+    <div class="eyebrow">DAY 06 / HANDS-ON DEVOPS LAB</div>
+    <h1>KUBERNETES,<br><span>ORGANIZED.</span></h1>
+    <p>Exploring namespaces, labels and selectors through hands-on Kubernetes practice.</p>
+    <div class="badges">
+      <span class="badge">Kubernetes</span>
+      <span class="badge">Minikube</span>
+      <span class="badge">kubectl</span>
+      <span class="badge">NGINX</span>
+    </div>
+    <div class="actions">
+      <a class="btn btn-primary" href="#architecture">EXPLORE THE LAB ↗</a>
+      <a class="btn" href="#commands">VIEW COMMANDS</a>
+    </div>
+  </div>
+
+  <div class="cluster reveal">
+    <div class="orbit"></div>
+    <div class="cluster-core"><div><strong>KUBERNETES</strong><small>CLUSTER</small></div></div>
+    <div class="node node-one"><b>● Namespace</b><small>dev environment</small></div>
+    <div class="node node-two"><b>● Pod / Web</b><small>NGINX workload</small></div>
+    <div class="node node-three"><b>● Labels</b><small>app=web</small></div>
+    <div class="node node-four"><b>● Namespace</b><small>prod environment</small></div>
+  </div>
+</header>
+
+<main class="container">
+<section class="section" id="architecture">
+  <div class="section-heading reveal">
+    <div class="eyebrow">WHAT I PRACTICED</div>
+    <h2>Core Kubernetes Concepts</h2>
+    <p>Practical resource organization and environment management.</p>
+  </div>
+  <div class="grid">
+    <article class="card reveal"><div class="card-icon">◈</div><h3>Namespaces</h3><p>Organize workloads into development and production environments.</p><span class="tag">RESOURCE ORGANIZATION</span></article>
+    <article class="card reveal"><div class="card-icon">⌘</div><h3>Labels</h3><p>Attach metadata such as app, env, tier and owner to resources.</p><span class="tag">RESOURCE METADATA</span></article>
+    <article class="card reveal"><div class="card-icon">⌕</div><h3>Selectors</h3><p>Find Kubernetes resources by matching their labels.</p><span class="tag">RESOURCE FILTERING</span></article>
+    <article class="card reveal"><div class="card-icon">↻</div><h3>kubectl</h3><p>Inspect contexts, switch namespaces and manage Pod labels.</p><span class="tag">CLI WORKFLOW</span></article>
+  </div>
+</section>
+
+<section class="section" id="environments">
+  <div class="section-heading reveal">
+    <div class="eyebrow">ENVIRONMENT OVERVIEW</div>
+    <h2>One Cluster. Separate Namespaces.</h2>
+    <p>Illustrative configuration from the Day 6 lab; these cards are not live monitoring.</p>
+  </div>
+  <div class="environment">
+    <article class="env-card reveal">
+      <div class="env-title"><span class="dot"></span> Development</div>
+      <p>Namespace: <code>dev</code></p>
+      <div class="pod-row"><span>Deployment</span><strong>web</strong></div>
+      <div class="pod-row"><span>Configured replicas</span><strong>2</strong></div>
+      <div class="pod-row"><span>Example label</span><strong>env=dev</strong></div>
+    </article>
+    <article class="env-card reveal">
+      <div class="env-title"><span class="dot"></span> Production</div>
+      <p>Namespace: <code>prod</code></p>
+      <div class="pod-row"><span>Deployment</span><strong>web</strong></div>
+      <div class="pod-row"><span>Configured replicas</span><strong>2</strong></div>
+      <div class="pod-row"><span>Example label</span><strong>env=prod</strong></div>
+    </article>
+  </div>
+</section>
+
+<section class="section" id="commands">
+  <div class="section-heading reveal">
+    <div class="eyebrow">TERMINAL WORKFLOW</div>
+    <h2>Commands Behind the Lab</h2>
+    <p>Practice inspecting resources and managing labels.</p>
+  </div>
+  <div class="terminal reveal">
+    <div class="terminal-top"><i></i><i></i><i></i><span>~/kubernetes-day6</span></div>
+    <pre><span class="comment"># Inspect the active context</span>
+kubectl config view --minify
+
+<span class="comment"># List Pods and labels</span>
+kubectl get pods --show-labels
+
+<span class="comment"># Filter by a label</span>
+kubectl get pods -l app=web
+
+<span class="comment"># Add a custom label</span>
+kubectl label pod POD_NAME owner=azeem
+
+<span class="comment"># Remove a custom label</span>
+kubectl label pod POD_NAME owner-
+
+<span class="comment"># Inspect both environments</span>
+kubectl get pods -n dev
+kubectl get pods -n prod</pre>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-heading reveal">
+    <div class="eyebrow">MY DEVOPS JOURNEY</div>
+    <h2>Learn. Practice. Document.</h2>
+  </div>
+  <div class="grid">
+    <article class="card reveal"><div class="number">01 / LEARN</div><h3>Understand</h3><p>Build a foundation in Kubernetes concepts.</p></article>
+    <article class="card reveal"><div class="number">02 / PRACTICE</div><h3>Experiment</h3><p>Run commands and verify real cluster results.</p></article>
+    <article class="card reveal"><div class="number">03 / DOCUMENT</div><h3>Show the Work</h3><p>Maintain a practical DevOps portfolio.</p></article>
+  </div>
+</section>
+</main>
+
+<footer><div class="container footer-inner"><div>KUBERNETES LEARNING SERIES · DAY 06</div><div>BUILT BY <strong>AZEEM AAMIR</strong> · DEVOPS & CLOUD AUTOMATION</div></div></footer>
+<script src="js/script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: prod
+  labels:
+    app: web
+    env: prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+      env: prod
+  template:
+    metadata:
+      labels:
+        app: web
+        env: prod
+        tier: frontend
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27
+          ports:
+            - containerPort: 80
